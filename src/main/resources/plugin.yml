@@ -1,0 +1,32 @@
+name: ReservasNE
+main: io.github.LucasMullerC.ReservasNE.ReservasNE
+version: 0.1.3
+author: LucasMullerC
+commands:
+  add:
+      description: Adicionar Reserva.
+      usage: /add
+      permission: reservasbte.add
+  exibir:
+      description: Exibir Regiao.
+      usage: /<command> [regiao|rank]
+  claim:
+      description: Reservar.
+      usage: /claim
+  finalizar:
+      description: Finalizar reserva.
+      usage: /finalizar
+  cancelar:
+      description: Cancelar reserva.
+      usage: /cancelar
+  reserva:
+      description: Gerenciar Reserva.
+      usage: /<command> [aceitar|recusar|Nick_Jogador|tp|coordenadas]
+  player:
+      description: Add builder existente.
+      usage: /player
+  area:
+      description: add area PRO e remover qualquer area.
+      usage: /<command> [add|remover]
+      
+      
