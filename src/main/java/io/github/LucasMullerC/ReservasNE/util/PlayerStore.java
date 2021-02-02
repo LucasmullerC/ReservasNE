@@ -129,7 +129,7 @@ public class PlayerStore {
 		}
 	}
 
-	public void remove(String value) {
+	public void remove(Gerenciador value) {
 		this.values.remove(value);
 	}
 

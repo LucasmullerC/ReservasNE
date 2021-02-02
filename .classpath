@@ -36,5 +36,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Shand/Documents/Eclipse  Works/ReservasNE/libs/worldguard-legacy-6.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/GerarAreas"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

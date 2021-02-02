@@ -1,6 +1,6 @@
 name: ReservasNE
 main: io.github.LucasMullerC.ReservasNE.ReservasNE
-version: 0.1.3
+version: 0.2.0
 author: LucasMullerC
 commands:
   add:
@@ -16,6 +16,10 @@ commands:
   finalizar:
       description: Finalizar reserva.
       usage: /finalizar
+  finalizar analise:
+      description: Analisar reserva.
+      usage: /finalizar reserva
+      permission: reservasbte.review
   cancelar:
       description: Cancelar reserva.
       usage: /cancelar
@@ -25,8 +29,12 @@ commands:
   player:
       description: Add builder existente.
       usage: /player
+      permission: reservasbte.player
   area:
       description: add area PRO e remover qualquer area.
-      usage: /<command> [add|remover]
-      
+      usage: /<command> [add|remover|tier4]
+  salvar:
+      description: Salvar dados.
+      usage: /salvar
+      permission: reservasbte.salvar
       

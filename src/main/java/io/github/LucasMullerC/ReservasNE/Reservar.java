@@ -11,20 +11,31 @@ import com.noahhusby.sledgehammer.datasets.projection.ModifiedAirocean;
 import com.noahhusby.sledgehammer.datasets.projection.ScaleProjection;
 
 import io.github.LucasMullerC.ReservasNE.Comandos.reserva;
+import io.github.LucasMullerC.ReservasNE.util.AreaEmConstrucao;
+import io.github.LucasMullerC.ReservasNE.util.AreaFinalizada;
 import io.github.LucasMullerC.ReservasNE.util.ListStore;
+import io.github.LucasMullerC.ReservasNE.util.Mapscsv;
+import io.github.LucasMullerC.ReservasNE.util.Pendente;
 import io.github.LucasMullerC.ReservasNE.util.PlayerStore;
 
 public class Reservar {
 	public static ListStore area;
 	public static PlayerStore player;
+	public static Mapscsv pendente;
+	public static Pendente AP;
+	public static Pendente ASR;
+	public static AreaEmConstrucao AC;
+	public static AreaFinalizada AF;
 	static Regions R;
+	static Areas A;
+	static DoneAreas D;
 	static Gerenciador G;
 	private static final GeographicProjection projection = new ModifiedAirocean();
 	private static final GeographicProjection uprightProj = GeographicProjection.orientProjection(projection,
 			GeographicProjection.Orientation.upright);
 	private static final ScaleProjection scaleProj = new ScaleProjection(uprightProj, Constants.SCALE, Constants.SCALE);
 
-	public String addarea(String regiao, String Dif, Location P) {
+	public static String addarea(String regiao, String Dif, Location P) {
 		int N = Integer.parseInt(Dif);
 		String Nome = regiao + Dif + area.getValues().size();
 		R = new Regions(Nome);
@@ -55,6 +66,29 @@ public class Reservar {
 	public static void RemoverArea(String Nome) {
 		area.remove(getRegionPos(Nome));
 	}
+	public static void ASRtoAC(String Nome,String Player) {
+		A = getASRPos(Nome);
+		A.setCredito(Player);
+		AC.add(A);
+		ASR.remove(A);
+	}
+	public static void ACtoASR(String Nome) {
+		A = getACPos(Nome);
+		A.setCredito("nulo");
+		ASR.add(A);
+		AC.remove(A);
+	}
+	public static void ACtoAF(String Nome) {
+		A = getACPos(Nome);
+		AF.add(A);
+		AC.remove(A);
+	}
+	public static void RemoverPendente() {
+		pendente.clear();
+	}
+	public static void addSemReserva(Areas p) {
+		ASR.add(p);
+	}
 
 	private static Regions Apply(String UUID) {
 		Random randomGenerator = new Random();
@@ -75,6 +109,30 @@ public class Reservar {
 		G.setRegiao(R.getNome());
 		player.add(G);
 		return R;
+	}
+	public static boolean ClaimPlayer (String UUID, String Regiao) {
+		R = getRegionPos(Regiao);
+		G = getCategoryPos(UUID);
+		if (R.getEstado() == false) {
+			R.setEstado(true);
+			G.setRegiao(R.getNome());
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public static Regions reservatier (String UUID, String Regiao) {
+		G = getCategoryPos(UUID);
+		if (G.getRegiao().matches("nulo")) {
+			R = getRegionPos(Regiao);
+			R.setEstado(true);
+			G.setRegiao(R.getNome());
+			return R;
+		} else {
+			return null;
+		}
+		
 	}
 	private static Regions Claim(String UUID, String Regiao, String Dif, Gerenciador G) {
 		Random randomGenerator = new Random();
@@ -157,12 +215,13 @@ public class Reservar {
 			return false;
 		} else {
 			String r = G.getRegiao();
-			String Dif = r.replaceFirst(".*?(\\d+).*", "$1");
-			if (Integer.parseInt(Dif) == 1) {
+			R = getRegionPos(r);
+			int dif = R.getDificuldade();
+			if (dif == 1) {
 				G.setQtdEasy(G.getQtdEasy() + 1);
-			} else if (Integer.parseInt(Dif) == 2) {
+			} else if (dif == 2) {
 				G.setQtdMedium(G.getQtdMedium() + 1);
-			} else if (Integer.parseInt(Dif) == 3) {
+			} else if (dif == 3) {
 				G.setQtdHard(G.getQtdHard() + 1);
 			}
 			G.setRegiao("nulo");
@@ -172,25 +231,50 @@ public class Reservar {
 			return true;
 		}
 	}
+	public static boolean addPendente (String UUID, String Nome) {
+		G = getCategoryPos(UUID);
+		if (G.getRegiao().matches("nulo")) {
+			return false;
+		} else {
+			String r = G.getRegiao();
+			R = getRegionPos(r);
+			D = new DoneAreas(R.getNome());
+			double[] coords = toGeo(R.getPos().getX(),R.getPos().getZ());
+			D.setLat(String.valueOf(coords[1]));
+			D.setLon(String.valueOf(coords[0]));
+			D.setNome(Nome);
+		    pendente.add(D);
+			return true;
+		}
+	}
+	public static DoneAreas getPendente () {
+		if (pendente.getValues().isEmpty() == true) {
+			return null;
+		}
+		else {
+			D = pendente.getValues().get(0);
+			return D;
+		}
+	}
 
 	public static int Promocao(String UUID) {
 		G = getCategoryPos(UUID);
 		if (G.getRank() == 1) {
-			if (G.getQtdEasy() >= 10) {
+			if (G.getQtdEasy() >= 5) {
 				G.setRank(2);
 				return 2;
 			} else {
 				return 0;
 			}
 		} else if (G.getRank() == 2) {
-			if (G.getQtdEasy() >= 15 && G.getQtdMedium() >= 15) {
+			if (G.getQtdEasy() >= 7 && G.getQtdMedium() >= 5) {
 				G.setRank(3);
 				return 3;
 			} else {
 				return 0;
 			}
 		} else if (G.getRank() == 3) {
-			if (G.getQtdEasy() >= 20 && G.getQtdMedium() >= 25 && G.getQtdHard() >= 10) {
+			if (G.getQtdEasy() >= 9 && G.getQtdMedium() >= 8 && G.getQtdHard() >= 5) {
 				G.setRank(4);
 				return 4;
 			} else {
@@ -235,15 +319,38 @@ public class Reservar {
 	public static int AreaSize() {
 		return area.getValues().size();
 	}
+	public static void limpapend() {
+		AP.clear();
+	}
 
 	public static String ExibirRank(String UUID) {
 		G = getCategoryPos(UUID);
 		return G.toString();
 	}
+	
 
 	private static Gerenciador getCategoryPos(String search) {
 		for (Gerenciador d : player.getValues()) {
 			if (d.getUUID() != null && d.getUUID().contains(search)) {
+				return d;
+			}
+		}
+		return null;
+	}
+	public static ArrayList<Areas> getAreaPos() {
+		return AP.getValues();
+	}
+	private static Areas getASRPos(String search) {
+		for (Areas d : ASR.getValues()) {
+			if (d.getNome() != null && d.getNome().contains(search)) {
+				return d;
+			}
+		}
+		return null;
+	}
+	private static Areas getACPos(String search) {
+		for (Areas d : AC.getValues()) {
+			if (d.getNome() != null && d.getNome().contains(search)) {
 				return d;
 			}
 		}

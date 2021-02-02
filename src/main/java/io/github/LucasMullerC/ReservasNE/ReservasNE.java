@@ -21,12 +21,18 @@ import io.github.LucasMullerC.ReservasNE.Comandos.exibir;
 import io.github.LucasMullerC.ReservasNE.Comandos.finalizar;
 import io.github.LucasMullerC.ReservasNE.Comandos.player;
 import io.github.LucasMullerC.ReservasNE.Comandos.reserva;
+import io.github.LucasMullerC.ReservasNE.Comandos.salvar;
+import io.github.LucasMullerC.ReservasNE.util.AreaEmConstrucao;
+import io.github.LucasMullerC.ReservasNE.util.AreaFinalizada;
 import io.github.LucasMullerC.ReservasNE.util.GrupoStore;
 import io.github.LucasMullerC.ReservasNE.util.ListStore;
+import io.github.LucasMullerC.ReservasNE.util.Mapscsv;
+import io.github.LucasMullerC.ReservasNE.util.Pendente;
 import io.github.LucasMullerC.ReservasNE.util.PlayerStore;
 
 public final class ReservasNE extends JavaPlugin {
 	Reservar R;
+	reserva GP;
 
 	public void onEnable() {
 		getCommand("add").setExecutor(new add());
@@ -37,29 +43,37 @@ public final class ReservasNE extends JavaPlugin {
 		getCommand("reserva").setExecutor(new reserva());
 		getCommand("player").setExecutor(new player());
 		getCommand("area").setExecutor(new area());
+		getCommand("salvar").setExecutor(new salvar());
 		
 
 		String pluginFolder = this.getDataFolder().getAbsolutePath();
 		(new File(pluginFolder)).mkdirs();
 		R.area = new ListStore(new File(pluginFolder + File.separator + "Areas-Reservas.txt"));
 		R.player = new PlayerStore(new File(pluginFolder + File.separator + "Data-Players.txt"));
-		reserva.grupo = new GrupoStore(new File(pluginFolder + File.separator + "Grupos.txt"));
-		reserva.grupo.load();
+		R.pendente = new Mapscsv(new File(pluginFolder + File.separator + "pendente.txt"));
+		R.AP = new Pendente(new File(pluginFolder + File.separator + "areas.txt"));
+		R.ASR = new Pendente(new File(pluginFolder + File.separator + "AreasSemReserva.txt"));
+		R.AC = new AreaEmConstrucao(new File(pluginFolder + File.separator + "AreasEmConstrucao.txt"));
+		R.AF = new AreaFinalizada(new File(pluginFolder + File.separator + "AreasFinalizadas.txt"));
+		GP.grupo = new GrupoStore(new File(pluginFolder + File.separator + "Grupos.txt"));
+		GP.grupo.load();
 		R.area.load();
+		R.ASR.load();
+		R.AF.load();
+		R.AC.load();
 		R.player.load();
+		R.pendente.load();
 		getLogger().info("Reservas BTE NE Ativado!");
 	}
 
 	public void onDisable() {
-		if (R.area.getValues().isEmpty() == false) {
-			R.area.save();
-		}
-		if (R.player.getValues().isEmpty() == false) {
-			R.player.save();
-		}
-		if (reserva.grupo.getValues().isEmpty() == false) {
-			reserva.grupo.save();
-		}
+		R.pendente.save();
+		R.area.save();
+		R.player.save();
+		R.ASR.save();
+		R.AC.save();
+		R.AF.save();
+		GP.grupo.save();
 		getLogger().info("Reservas BTE NE Desativado!");
 	}
 	

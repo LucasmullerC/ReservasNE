@@ -35,15 +35,15 @@ public class reserva implements CommandExecutor {
 					Gerenciador P2 = null;
 					Gerenciador P1 = Reservar.getPlayer(id.toString());
 					if (Group.getPendente() != null) {
-						if (Group.getPlayer1() != null) {
+						if (Group.getPlayer1() == null) {
 							P2 = Reservar.getPlayer(Group.getPendente());
 							P2.setGrupo(true);
 							Group.setPendente(null);
-						} else if (Group.getPlayer2() != null) {
+						} else if (Group.getPlayer2() == null) {
 							P2 = Reservar.getPlayer(Group.getPendente());
 							P2.setGrupo(true);
 							Group.setPendente(null);
-						} else if (Group.getPlayer3() != null) {
+						} else if (Group.getPlayer3() == null) {
 							P2 = Reservar.getPlayer(Group.getPendente());
 							P2.setGrupo(true);
 							Group.setPendente(null);
@@ -128,14 +128,14 @@ public class reserva implements CommandExecutor {
 					G = Reservar.getPlayer(id.toString());
 					GP = Reservar.getPlayer(idP.toString());
 					Grupos Group;
-					if (G.getRegiao() == null) {
+					if (G.getRegiao() == "nulo") {
 						sender.sendMessage(ChatColor.RED + "O Jogador não tem nenhuma região reservada.");
 						return true;
-					} else if (GP.getRegiao() != null) {
+					} else if (GP.getRegiao().equalsIgnoreCase("nulo") == false) {
 						sender.sendMessage(ChatColor.RED + "Você já tem uma região reservada!");
 						sender.sendMessage(ChatColor.WHITE + "Finalize ou cancele essa região para reservar uma nova!");
 						return true;
-					} else if (G.getRegiao() != null && GP.getRegiao() == null) {
+					} else if (G.getRegiao() != "nulo" && GP.getRegiao().equalsIgnoreCase("nulo")) {
 						if (grupo.getValues().size() <= 0) {
 							Group = new Grupos(id.toString());
 							grupo.add(Group);
