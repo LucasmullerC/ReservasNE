@@ -20,6 +20,7 @@ public class cancelar implements CommandExecutor{
 			if (args.length == 0) {
 				Player player = (Player) sender;
 				UUID id = player.getUniqueId();
+				boolean Stats = false;
 				Gerenciador G = Reservar.getPlayer(id.toString());
 				Grupos GP = reserva.getGruposPos(id.toString());
 				if (GP != null) {
@@ -28,31 +29,33 @@ public class cancelar implements CommandExecutor{
 						if (GP.getPlayer1() != null) {
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region removeowner " + G.getRegiao() + " " + GP.getPlayer1() + " -w TerraPreGenerated");
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"lp user " +GP.getPlayer1()+ " permission unset worldedit.* worldguard:region="+G.getRegiao());
-							boolean Stats = Reservar.Cancelar(GP.getPlayer1());
+							Stats = Reservar.Cancelar(GP.getPlayer1());
 							GP.setPlayer1(null);
 							cont++;
 						}
 						else if (GP.getPlayer2() != null) {
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region removeowner " + G.getRegiao() + " " + GP.getPlayer2() + " -w TerraPreGenerated");
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"lp user " +GP.getPlayer1()+ " permission unset worldedit.* worldguard:region="+G.getRegiao());
-							boolean Stats = Reservar.Cancelar(GP.getPlayer2());
+							Stats = Reservar.Cancelar(GP.getPlayer2());
 							GP.setPlayer2(null);
 							cont++;
 						}
 						else if (GP.getPlayer3() != null) {
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region removeowner " + G.getRegiao() + " " + GP.getPlayer3() + " -w TerraPreGenerated");
 							Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"lp user " +GP.getPlayer1()+ " permission unset worldedit.* worldguard:region="+G.getRegiao());
-							boolean Stats = Reservar.Cancelar(GP.getPlayer3());
+							Stats = Reservar.Cancelar(GP.getPlayer3());
 							GP.setPlayer3(null);
 							cont++;
 						}
 					}while (cont == 4);
 				}
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region removeowner " + G.getRegiao() + " " + id.toString() + " -w TerraPreGenerated");
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"lp user " +id.toString()+ " permission unset worldedit.* worldguard:region="+G.getRegiao());
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region setpriority " +G.getRegiao()+ " 0 -w TerraPreGenerated");
-				Reservar.ACtoASR(G.getRegiao());
-				boolean Stats = Reservar.Cancelar(id.toString());
+				else {
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region removeowner " + G.getRegiao() + " " + id.toString() + " -w TerraPreGenerated");
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"lp user " +id.toString()+ " permission unset worldedit.* worldguard:region="+G.getRegiao());
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"region setpriority " +G.getRegiao()+ " 0 -w TerraPreGenerated");
+					Reservar.ACtoASR(G.getRegiao());
+					Stats = Reservar.Cancelar(id.toString());
+				}
 				if (Stats == true) {
 					sender.sendMessage(ChatColor.GREEN + "Região cancelada, Você pode reservar outra região.");
 					return true;

@@ -150,13 +150,15 @@ public class finalizar implements CommandExecutor {
 				}
 			} while (cont == 4);
 		}
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-				"region removeowner " + G.getRegiao() + " " + id.toString() + " -w TerraPreGenerated");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-				"lp user " + id.toString() + " permission unset worldedit.* worldguard:region=" + G.getRegiao());
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
-				"region remove " + G.getRegiao() + " -w TerraPreGenerated");
-		Stats = Reservar.Finalizar(id.toString());
+		else {
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+					"region removeowner " + G.getRegiao() + " " + id.toString() + " -w TerraPreGenerated");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+					"lp user " + id.toString() + " permission unset worldedit.* worldguard:region=" + G.getRegiao());
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+					"region remove " + G.getRegiao() + " -w TerraPreGenerated");
+			Stats = Reservar.Finalizar(id.toString());
+		}
 		UUID = id.toString();
 		p = Bukkit.getPlayer(UUID);
 		if (Stats == true) {
