@@ -1,6 +1,6 @@
 name: ReservasNE
 main: io.github.LucasMullerC.ReservasNE.ReservasNE
-version: 0.2.0
+version: 0.3.5
 author: LucasMullerC
 commands:
   add:
@@ -23,18 +23,22 @@ commands:
   cancelar:
       description: Cancelar reserva.
       usage: /cancelar
-  reserva:
-      description: Gerenciar Reserva.
-      usage: /<command> [aceitar|recusar|Nick_Jogador|tp|coordenadas]
   player:
       description: Add builder existente.
       usage: /player
       permission: reservasbte.player
   area:
-      description: add area PRO e remover qualquer area.
-      usage: /<command> [add|remover|tier4]
+      description: Comandos gerais de reserva.
+      usage: /<command> [add|remover|aceitar|recusar|tp|coordenadas|Nick_do_jogador|tier4] Codigo
   salvar:
       description: Salvar dados.
       usage: /salvar
       permission: reservasbte.salvar
+  reloadne:
+      description: Recarregar.
+      usage: /reloadne
+      permission: reservasbte.admin
+  link:
+      description: Linkar Discord.
+      usage: /link Nome_no_Discord
       
